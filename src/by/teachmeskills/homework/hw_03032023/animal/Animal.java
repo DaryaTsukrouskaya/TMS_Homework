@@ -111,7 +111,8 @@ public abstract class Animal {
     static void getInfo(String pic) {
         for (int i = 0; i < animal.length; i++) {
             if (animal[i].picture.equals(pic)) {
-                System.out.println(animal[i].food + animal[i].hunger + animal[i].boundaries + animal[i].location);
+                System.out.println(animal[i].toString());
+                return;
             }
         }
     }

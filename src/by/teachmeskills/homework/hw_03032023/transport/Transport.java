@@ -1,7 +1,7 @@
 package by.teachmeskills.homework.hw_03032023.transport;
 
 public abstract class Transport {
-   protected int horsePower;
+    protected int horsePower;
     protected int maxSpeed;
     protected int weight;
     protected String model;
@@ -15,7 +15,7 @@ public abstract class Transport {
 
     public double kilowattePower() {
         double i = 0.74;
-        double kilPow = this.horsePower/i;
+        double kilPow = this.horsePower / i;
         return kilPow;
     }
 
