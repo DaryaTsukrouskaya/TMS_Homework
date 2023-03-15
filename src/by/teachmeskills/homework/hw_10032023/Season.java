@@ -6,6 +6,7 @@ public enum Season {
     AUTUMN("Осень"),
     WINTER("Зима");
     String season;
+
     Season(String season) {
         this.season = season;
     }

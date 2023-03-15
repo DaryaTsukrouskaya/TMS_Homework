@@ -7,8 +7,8 @@ import by.teachmeskills.homework.hw_10032023.exceptions.EntityNotFoundException;
 import java.util.Scanner;
 
 public class Shop {
-    private static Product[] productList = new Product[50];
-    private static int goodsListIndex = 0;
+    private Product[] productList = new Product[50];
+    private int goodsListIndex = 0;
     private Scanner scanner = new Scanner(System.in);
 
     public void addProduct(Product product) throws EntityAlreadyExistsException {
