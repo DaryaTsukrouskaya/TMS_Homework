@@ -7,14 +7,14 @@ import by.teachmeskills.homework.hw_10032023.exceptions.EntityNotFoundException;
 import java.util.Scanner;
 
 public class Shop {
-    protected static Product[] productList = new Product[50];
-    protected static int goodsListIndex = 0;
-    Scanner scanner = new Scanner(System.in);
+    private static Product[] productList = new Product[50];
+    private static int goodsListIndex = 0;
+    private Scanner scanner = new Scanner(System.in);
 
     public void addProduct(Product product) throws EntityAlreadyExistsException {
         boolean alreadyExists = false;
         for (int i = 0; i <= productList.length - 1; i++) {
-            if (productList[i] != null && productList[i].id == product.id) {
+            if (productList[i] != null && productList[i].getId() == product.getId()) {
                 alreadyExists = true;
                 break;
             }
@@ -55,7 +55,7 @@ public class Shop {
         } else {
             for (int i = 0; i < productList.length - 1; i++) {
                 if (productList[i] != null) {
-                    if (productList[i].id == productId) {
+                    if (productList[i].getId() == productId) {
                         productList[i] = null;
                         notFoundEntity = false;
                         return;
@@ -84,7 +84,7 @@ public class Shop {
             if (productList[i] == null) {
                 continue;
             }
-            if (productList[i].id == productId) {
+            if (productList[i].getId() == productId) {
                 System.out.println("Choose,what product parameter you would like to change: ");
                 System.out.print("1 - name , 2 - price : ");
                 int change = scanner.nextInt();
@@ -92,12 +92,12 @@ public class Shop {
                     case 1:
                         System.out.print("Enter new name: ");
                         String newName = scanner.next();
-                        productList[i].name = newName;
+                        productList[i].setName(newName);
                         break;
                     case 2:
                         System.out.println("Enter new price ");
                         int newPrice = scanner.nextInt();
-                        productList[i].price = newPrice;
+                        productList[i].setPrice(newPrice);
                         break;
                     default:
                         System.out.println("There is no such option");

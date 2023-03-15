@@ -1,6 +1,6 @@
 package by.teachmeskills.homework.hw_10032023;
 
-import by.teachmeskills.homework.hw_10032023.exceptions.CarException;
+import by.teachmeskills.homework.hw_10032023.exceptions.CarStartException;
 
 public class Main {
     public static void main(String[] args) {
@@ -11,7 +11,7 @@ public class Main {
             hamer.start();
             reno.start();
             mazda.start();
-        } catch (CarException exc) {
+        } catch (CarStartException exc) {
             System.out.println(exc.getMessage());
         }
     }

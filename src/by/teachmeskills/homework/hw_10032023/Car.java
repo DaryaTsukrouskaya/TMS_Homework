@@ -1,6 +1,6 @@
 package by.teachmeskills.homework.hw_10032023;
 
-import by.teachmeskills.homework.hw_10032023.exceptions.CarException;
+import by.teachmeskills.homework.hw_10032023.exceptions.CarStartException;
 
 public class Car {
     protected int price;
@@ -40,10 +40,10 @@ public class Car {
         this.model = model;
     }
 
-    public void start() throws CarException {
+    public void start() throws CarStartException {
         int num = (int) (Math.random() * 20);
         if (num % 2 == 0) {
-            throw new CarException("try again");
+            throw new CarStartException("Car is not started because random number is even. Please, try again.");
         }
         System.out.println("The car is running");
     }

@@ -27,7 +27,7 @@ public class Main {
 
         for (int i = 0; i <= test.length - 1; i++) {
             if (test[i] != null && test[i + 1] != null) {
-                if (test[i].price > test[i + 1].price) {
+                if (test[i].getPrice() > test[i + 1].getPrice()) {
                     product = test[i + 1];
                     test[i + 1] = test[i];
                     test[i] = product;
