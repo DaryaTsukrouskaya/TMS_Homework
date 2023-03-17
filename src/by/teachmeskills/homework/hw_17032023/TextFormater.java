@@ -11,7 +11,18 @@ public class TextFormater {
         return count;
     }
 
-//    public static boolean sentencePalindromCheck(String str) {
-//
-//    }
+    public static boolean sentencePalindromCheck(String str) {
+        boolean palindrom = false;
+        String[] substr;
+        substr = str.split("[ ,]+");
+        for (int i = 0; i < substr.length; i++) {
+            StringBuilder stringBuilder = new StringBuilder(substr[i]);
+            if (substr[i].length() > 1 && substr[i].equalsIgnoreCase(stringBuilder.reverse().toString())) {
+                palindrom = true;
+                break;
+            }
+        }
+        return palindrom;
+    }
 }
+
