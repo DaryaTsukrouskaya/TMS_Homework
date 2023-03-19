@@ -1,5 +1,6 @@
 package by.teachmeskills.homework.hw_17032023;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -10,29 +11,23 @@ public class СensorshipСheck {
     private static final String FILE_PATH2 = "C:\\Users\\Admin\\Desktop\\ObsceneWords.txt";
 
     public static void main(String[] args) {
-        try (FileReader fileReader1 = new FileReader(FILE_PATH1);
-             FileReader fileReader2 = new FileReader(FILE_PATH2)) {
-            int t;
-            int o;
-            char[] textBuffer = new char[10000];
-            char[] obsceneWordsBuffer = new char[100];
+        try (BufferedReader fileReader1 = new BufferedReader(new FileReader(FILE_PATH1));
+             BufferedReader fileReader2 = new BufferedReader(new FileReader(FILE_PATH2))) {
+            String t;
+            String o;
+            int obsceneWordsNumber = 0;
+            StringBuilder sbForText = new StringBuilder();
+            StringBuilder sbForObsceneWords = new StringBuilder();
             String[] textSentences;
             String[] obsceneWords;
-            int obsceneWordsNumber = 0;
-            while ((t = fileReader1.read(textBuffer)) != -1) {
-                if (t < 10000) {
-                    textBuffer = Arrays.copyOf(textBuffer, t);
-                }
+            while ((t = fileReader1.readLine()) != null) {
+                sbForText.append(t + System.lineSeparator());
             }
-            while ((o = fileReader2.read(obsceneWordsBuffer)) != -1) {
-                if (o < 100) {
-                    obsceneWordsBuffer = Arrays.copyOf(obsceneWordsBuffer, o);
-                }
+            while ((o = fileReader2.readLine()) != null) {
+                sbForObsceneWords.append(o + System.lineSeparator());
             }
-            String textString = new String(textBuffer);
-            String obsceneWordsString = new String(obsceneWordsBuffer);
-            textSentences = textString.split("[.!?]\\s*");
-            obsceneWords = obsceneWordsString.split("\r\n");
+            textSentences = sbForText.toString().split("[.!?]\\s*");
+            obsceneWords = sbForObsceneWords.toString().split("\r\n");
             for (int i = 0; i < textSentences.length; i++) {
                 for (int j = 0; j < obsceneWords.length; j++) {
                     if (textSentences[i].contains(obsceneWords[j])) {

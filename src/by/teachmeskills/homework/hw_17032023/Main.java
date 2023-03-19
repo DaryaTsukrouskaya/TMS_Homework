@@ -1,24 +1,24 @@
 package by.teachmeskills.homework.hw_17032023;
 
-import java.io.*;
-import java.util.Arrays;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Main {
-    private static final String FILE_PATH = "C:\\Users\\Admin\\Desktop\\check.txt";
+    private static final String FILE_PATH1 = "C:\\Users\\Admin\\Desktop\\check.txt";
+    private static final String FILE_PATH2 = "C:\\Users\\Admin\\Desktop\\new.txt";
 
     public static void main(String[] args) {
-        try (FileReader fileReader = new FileReader(FILE_PATH);
-             FileWriter fileWriter = new FileWriter("C:\\Users\\Admin\\Desktop\\new.txt")) {
-            char buffer[] = new char[1000];
+        try (BufferedReader fileReader = new BufferedReader(new FileReader(FILE_PATH1));
+             FileWriter fileWriter = new FileWriter(FILE_PATH2)) {
             String sentences[];
-            int s;
-            while ((s = fileReader.read(buffer)) != -1) {
-                if (s < 1000) {
-                    buffer = Arrays.copyOf(buffer, s);
-                }
+            StringBuilder sb = new StringBuilder();
+            String s;
+            while ((s = fileReader.readLine()) != null) {
+                sb.append(s + System.lineSeparator());
             }
-            String string = new String(buffer);
-            sentences = string.split("[.!?]\\s*");
+            sentences = sb.toString().split("[.!?]\\s*");
             for (int i = 0; i < sentences.length; i++) {
                 if (TextFormater.sentencePalindromCheck(sentences[i]) == true || (TextFormater.sentenceWordnumber(sentences[i]) >= 3
                         && TextFormater.sentenceWordnumber(sentences[i]) <= 5)) {
