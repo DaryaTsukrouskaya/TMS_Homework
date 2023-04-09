@@ -1,4 +1,4 @@
-package by.teachmeskills.homework.hw_31032023.documentValidation;
+package by.teachmeskills.homework.hw_31032023.documentValidator;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
-public class DocumentValidation {
+public class DocumentValidator {
     private static final String FILE_NAME = "C:\\documentReport.txt";
 
     public static void main(String[] args) {
