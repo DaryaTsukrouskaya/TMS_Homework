@@ -4,7 +4,6 @@ import java.util.function.Function;
 
 public class FunctionTest {
     private static String str = "";
-
     public static void main(String[] args) {
 
         Function<Integer, String> function = c -> {

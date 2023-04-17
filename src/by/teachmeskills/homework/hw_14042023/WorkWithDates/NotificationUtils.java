@@ -8,7 +8,7 @@ import java.time.Month;
 
 public class NotificationUtils {
 
-    public static void SendNotifications(String filePath) {
+    public static void sendNotifications(String filePath) {
         String user;
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath))) {
             while ((user = bufferedReader.readLine()) != null) {
