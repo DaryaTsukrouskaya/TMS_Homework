@@ -1,0 +1,3 @@
+module tmspaymentsystem {
+    exports paymentsystem;
+}
