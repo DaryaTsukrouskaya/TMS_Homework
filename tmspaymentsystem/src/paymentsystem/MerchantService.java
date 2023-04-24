@@ -23,7 +23,7 @@ public class MerchantService {
 
     static {
         try {
-            bankAccountsFile = createFile(Paths.get("C:\\bank_account.txt"));
+            bankAccountsFile = createFile(Paths.get(BANK_ACCOUNTS));
             merchantsFile = createFile(Paths.get(MERCHANTS));
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -73,7 +73,7 @@ public class MerchantService {
     }
 
     public void updateBankAccount(BankAccount bankAccount, String newAccountNum) {
-        boolean exist = Merchants.stream().anyMatch(c -> c.getBankAccounts().stream().filter(a -> a.getAccountNumber().equals(newAccountNum)).isParallel());
+        boolean exist = Merchants.stream().anyMatch(c -> c.getBankAccounts().stream().filter(f -> f.getAccountNumber().equals(bankAccount.getAccountNumber())).isParallel());
         if (!exist) {
             try {
                 throw new NoBankAccountsFoundException("Its impossible to update non-existent account");
@@ -84,9 +84,14 @@ public class MerchantService {
             bankAccount.setAccountNumber(newAccountNum);
             try {
                 List<String> linesOfFile = Files.readAllLines(Paths.get(BANK_ACCOUNTS));
-                linesOfFile.stream().map(line -> line.replaceFirst(bankAccount.getAccountNumber(), newAccountNum)).toList();
+                Path newFile = Files.createFile(Paths.get(BANK_ACCOUNTS));
+                String newLineOfFile = linesOfFile.stream().filter(line -> line.contains(bankAccount.getAccountNumber().replace(bankAccount.getAccountNumber(), newAccountNum))).findFirst().toString();
                 for (int i = 0; i < linesOfFile.size(); i++) {
-                    Files.write(Paths.get(BANK_ACCOUNTS), (linesOfFile + "\n").getBytes());
+                    if (linesOfFile.get(i).contains(bankAccount.getAccountNumber())) {
+                        Files.write(newFile, (newLineOfFile + "\n").getBytes(), StandardOpenOption.APPEND);
+                        continue;
+                    }
+                    Files.write(newFile, (linesOfFile.get(i) + "\n").getBytes(), StandardOpenOption.APPEND);
                 }
             } catch (IOException e) {
                 System.out.println(e.getMessage());
@@ -100,8 +105,9 @@ public class MerchantService {
         try {
             List<String> linesOfFile = Files.readAllLines(Paths.get(BANK_ACCOUNTS));
             linesOfFile = linesOfFile.stream().filter(line -> !line.contains(bankAccount.getAccountNumber())).toList();
+            Path newFile = Files.createFile(Paths.get(BANK_ACCOUNTS));
             for (int i = 0; i < linesOfFile.size(); i++) {
-                Files.write(Paths.get(BANK_ACCOUNTS), (linesOfFile.get(i) + "\n").getBytes());
+                Files.write(newFile, (linesOfFile.get(i) + "\n").getBytes(), StandardOpenOption.APPEND);
             }
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -140,13 +146,15 @@ public class MerchantService {
         try {
             List<String> linesOfMerFile = Files.readAllLines(Paths.get(MERCHANTS));
             List<String> linesOfBAFile = Files.readAllLines(Paths.get(BANK_ACCOUNTS));
+            Path newFileBA = Files.createFile(Paths.get(MERCHANTS));
+            Path newFileMerchants = Files.createFile(Paths.get(BANK_ACCOUNTS));
             linesOfMerFile = linesOfMerFile.stream().filter(line -> !line.contains(id)).toList();
             linesOfBAFile = linesOfBAFile.stream().filter(line -> !line.contains(id)).toList();
             for (int i = 0; i < linesOfMerFile.size(); i++) {
-                Files.write(Paths.get(MERCHANTS), (linesOfMerFile.get(i) + "\n").getBytes());
+                Files.write(newFileMerchants, (linesOfMerFile.get(i) + "\n").getBytes(), StandardOpenOption.APPEND);
             }
             for (int i = 0; i < linesOfBAFile.size(); i++) {
-                Files.write(Paths.get(MERCHANTS), (linesOfBAFile.get(i) + "\n").getBytes());
+                Files.write(newFileBA, (linesOfBAFile.get(i) + "\n").getBytes(), StandardOpenOption.APPEND);
             }
         } catch (IOException e) {
             System.out.println(e.getMessage());
