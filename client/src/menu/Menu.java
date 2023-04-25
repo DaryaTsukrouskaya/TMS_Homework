@@ -1,16 +1,26 @@
 package menu;
 
-import paymentsystem.*;
+import paymentsystem.BankAccount;
+import paymentsystem.Status;
+import paymentsystem.exceptions.BankAccountNotAddedException;
 
-import java.util.List;
+import paymentsystem.Merchant;
+import paymentsystem.MerchantService;
+import paymentsystem.exceptions.BankAccountNotDeletedException;
+import paymentsystem.exceptions.MerchantNotDeletedException;
+import paymentsystem.exceptions.MerchantNotFoundException;
+import paymentsystem.exceptions.NoBankAccountsFoundException;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Menu {
     public static void main(String[] args) {
         List<Merchant> merchants = new ArrayList<>();
         MerchantService merchantService = new MerchantService(merchants);
+        Scanner scan = new Scanner(System.in);
         int choice = 2;
         while (choice != 0) {
             System.out.println("Please enter the number corresponding to what you want to do:");
@@ -24,7 +34,6 @@ public class Menu {
                     7- get merchant by id
                     8- delete merchant
                     0- exit""");
-            Scanner scan = new Scanner(System.in);
             choice = scan.nextInt();
             switch (choice) {
                 case 0 -> {
@@ -39,7 +48,7 @@ public class Menu {
                     BankAccount bankAccount = new BankAccount(merchant.getId(), Status.ACTIVE, accNum, LocalDateTime.now());
                     try {
                         merchantService.addBankAccount(merchant, bankAccount);
-                    } catch (IllegalArgumentException e) {
+                    } catch (BankAccountNotAddedException e) {
                         System.out.println(e.getMessage());
                     }
                     merchantService.createMerchant(merchant);
@@ -47,8 +56,18 @@ public class Menu {
                 case 2 -> {
                     System.out.println("Enter merchant id:");
                     String id = scan.next();
-                    Merchant merchant = merchantService.getMerchantById(id);
-                    List<BankAccount> bankAccounts = merchantService.getMerchantBankAccounts(merchant);
+                    Merchant merchant = null;
+                    List<BankAccount> bankAccounts = null;
+                    try {
+                        merchant = merchantService.getMerchantById(id);
+                    } catch (MerchantNotFoundException e) {
+                        System.out.println(e.getMessage());
+                    }
+                    try {
+                        bankAccounts = merchantService.getMerchantBankAccounts(merchant);
+                    } catch (NoBankAccountsFoundException e) {
+                        System.out.println(e.getMessage());
+                    }
                     bankAccounts.forEach(System.out::println);
                 }
                 case 3 -> {
@@ -58,24 +77,46 @@ public class Menu {
                     String accNum = scan.next();
                     System.out.println("Enter new required account number:");
                     String newAccNum = scan.next();
-                    Merchant merchant = merchantService.getMerchantById(id);
-                    List<BankAccount> bankAccounts = merchantService.getMerchantBankAccounts(merchant);
-                    BankAccount bankAccount = bankAccounts.stream().filter(a -> a.getAccountNumber().equals(accNum)).findFirst().get();
-                    merchantService.updateBankAccount(bankAccount, newAccNum);
+                    Merchant merchant = null;
+                    try {
+                        merchant = merchantService.getMerchantById(id);
+                    } catch (MerchantNotFoundException e) {
+                        System.out.println(e.getMessage());
+                    }
+                    BankAccount bankAccount = new BankAccount(merchant.getId(), Status.ACTIVE, accNum, LocalDateTime.now());
+                    try {
+                        merchantService.updateBankAccount(bankAccount, newAccNum);
+                    } catch (NoBankAccountsFoundException e) {
+                        System.out.println(e.getMessage());
+                    }
                 }
                 case 4 -> {
                     System.out.println("Enter merchant id:");
                     String id = scan.next();
-                    Merchant merchant = merchantService.getMerchantById(id);
+                    Merchant merchant = null;
+                    try {
+                        merchant = merchantService.getMerchantById(id);
+                    } catch (MerchantNotFoundException e) {
+                        System.out.println(e.getMessage());
+                    }
                     System.out.println("Enter account number for deleting:");
                     String accNum = scan.next();
-                    List<BankAccount> bankAccounts = merchantService.getMerchantBankAccounts(merchant);
+
+                    List<BankAccount> bankAccounts = null;
+                    try {
+                        bankAccounts = merchantService.getMerchantBankAccounts(merchant);
+                    } catch (NoBankAccountsFoundException e) {
+                        System.out.println(e.getMessage());
+                    }
                     BankAccount bankAccount = bankAccounts.stream().filter(a -> a.getAccountNumber().equals(accNum)).findFirst().get();
-                    boolean deleted = merchantService.deleteBankAccount(bankAccount);
+                    boolean deleted = false;
+                    try {
+                        deleted = merchantService.deleteBankAccount(bankAccount);
+                    } catch (BankAccountNotDeletedException e) {
+                        System.out.println(e.getMessage());
+                    }
                     if (deleted) {
                         System.out.println("Bank account successfully deleted!");
-                    } else {
-                        System.out.println("Something went wrong...");
                     }
                 }
                 case 5 -> {
@@ -91,17 +132,25 @@ public class Menu {
                 case 7 -> {
                     System.out.println("Enter merchant id:");
                     String id = scan.next();
-                    Merchant merchant = merchantService.getMerchantById(id);
+                    Merchant merchant = null;
+                    try {
+                        merchant = merchantService.getMerchantById(id);
+                    } catch (MerchantNotFoundException e) {
+                        System.out.println(e.getMessage());
+                    }
                     System.out.println(merchant.toString());
                 }
                 case 8 -> {
                     System.out.println("Enter merchant id for deleting:");
                     String id = scan.next();
-                    boolean deleted = merchantService.deleteMerchant(id);
+                    boolean deleted = false;
+                    try {
+                        deleted = merchantService.deleteMerchant(id);
+                    } catch (MerchantNotDeletedException | MerchantNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
                     if (deleted) {
                         System.out.println("Merchant successfully deleted!");
-                    } else {
-                        System.out.println("Something went wrong...");
                     }
                 }
                 default -> throw new IllegalStateException("Unexpected value: " + choice);
