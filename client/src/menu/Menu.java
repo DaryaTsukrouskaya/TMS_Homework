@@ -147,7 +147,7 @@ public class Menu {
                     try {
                         deleted = merchantService.deleteMerchant(id);
                     } catch (MerchantNotDeletedException | MerchantNotFoundException e) {
-                        throw new RuntimeException(e);
+                        System.out.println(e.getMessage());
                     }
                     if (deleted) {
                         System.out.println("Merchant successfully deleted!");
