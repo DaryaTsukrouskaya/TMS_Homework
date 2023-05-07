@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:simpleType name="stringType">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+    <xs:complexType name="employeeType">
+        <xs:sequence>
+            <xs:element name="fullName" type="stringType"/>
+            <xs:element name="position" type="stringType"/>
+            <xs:element name="department" type="stringType"/>
+            <xs:element name="workExperience" type="stringType"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="employeesType">
+        <xs:sequence>
+            <xs:element name="employee" type="employeeType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="medicalInstitutionType">
+        <xs:sequence>
+            <xs:element name="employees" type="employeesType"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="medicalInstitution" type="medicalInstitutionType"/>
+</xs:schema>
