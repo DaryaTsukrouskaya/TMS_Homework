@@ -21,7 +21,8 @@ public class Menu {
         List<Merchant> merchants = new ArrayList<>();
         MerchantService merchantService = new MerchantService(merchants);
         Scanner scan = new Scanner(System.in);
-        int choice = 2;
+        System.out.println("Please enter anything other than zero to get started.");
+        int choice = scan.nextInt();
         while (choice != 0) {
             System.out.println("Please enter the number corresponding to what you want to do:");
             System.out.println("""
@@ -60,12 +61,8 @@ public class Menu {
                     List<BankAccount> bankAccounts = null;
                     try {
                         merchant = merchantService.getMerchantById(id);
-                    } catch (MerchantNotFoundException e) {
-                        System.out.println(e.getMessage());
-                    }
-                    try {
                         bankAccounts = merchantService.getMerchantBankAccounts(merchant);
-                    } catch (NoBankAccountsFoundException e) {
+                    } catch (MerchantNotFoundException | NoBankAccountsFoundException e) {
                         System.out.println(e.getMessage());
                     }
                     bankAccounts.forEach(System.out::println);
@@ -80,13 +77,9 @@ public class Menu {
                     Merchant merchant = null;
                     try {
                         merchant = merchantService.getMerchantById(id);
-                    } catch (MerchantNotFoundException e) {
-                        System.out.println(e.getMessage());
-                    }
-                    BankAccount bankAccount = new BankAccount(merchant.getId(), Status.ACTIVE, accNum, LocalDateTime.now());
-                    try {
+                        BankAccount bankAccount = new BankAccount(merchant.getId(), Status.ACTIVE, accNum, LocalDateTime.now());
                         merchantService.updateBankAccount(bankAccount, newAccNum);
-                    } catch (NoBankAccountsFoundException e) {
+                    } catch (MerchantNotFoundException | NoBankAccountsFoundException e) {
                         System.out.println(e.getMessage());
                     }
                 }
@@ -112,11 +105,9 @@ public class Menu {
                     boolean deleted = false;
                     try {
                         deleted = merchantService.deleteBankAccount(bankAccount);
+                        System.out.println("Bank account successfully deleted!");
                     } catch (BankAccountNotDeletedException e) {
                         System.out.println(e.getMessage());
-                    }
-                    if (deleted) {
-                        System.out.println("Bank account successfully deleted!");
                     }
                 }
                 case 5 -> {
@@ -146,12 +137,11 @@ public class Menu {
                     boolean deleted = false;
                     try {
                         deleted = merchantService.deleteMerchant(id);
+                        System.out.println("Merchant successfully deleted!");
                     } catch (MerchantNotDeletedException | MerchantNotFoundException e) {
                         System.out.println(e.getMessage());
                     }
-                    if (deleted) {
-                        System.out.println("Merchant successfully deleted!");
-                    }
+
                 }
                 default -> throw new IllegalStateException("Unexpected value: " + choice);
             }

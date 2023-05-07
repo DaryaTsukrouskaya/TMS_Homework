@@ -20,7 +20,6 @@ import java.util.stream.Stream;
 import static java.nio.file.Files.createFile;
 
 public class MerchantService implements FilesPathes {
-    private static boolean exist = false;
     private List<Merchant> merchants;
     private static Path bankAccountsFile;
     private static Path merchantsFile;
@@ -74,38 +73,34 @@ public class MerchantService implements FilesPathes {
 
     public void updateBankAccount(BankAccount bankAccount, String newAccountNum) throws NoBankAccountsFoundException {
         merchants.forEach(merchant -> {
-            BankAccount foundBA = merchant.getBankAccounts().stream().filter(a -> a.getAccountNumber().equals(bankAccount.getAccountNumber())).findFirst().orElse(null);
-            if (foundBA != null) {
+            try {
+                BankAccount foundBA = merchant.getBankAccounts().stream().filter(a -> a.getAccountNumber().equals(bankAccount.getAccountNumber())).findFirst().orElseThrow(() -> new NoBankAccountsFoundException("No Bank Account found!"));
                 foundBA.setAccountNumber(newAccountNum);
-                exist = true;
+            } catch (NoBankAccountsFoundException e) {
+                throw new RuntimeException(e);
             }
         });
-        if (!exist) {
-            throw new NoBankAccountsFoundException("Its impossible to update non-existent account");
-        } else {
-            exist = false;
-            try {
-                List<String> linesOfFile = Files.readAllLines(Paths.get(BANK_ACCOUNTS));
-                List<String> changedLinesOfFile = new ArrayList<>();
-                for (String s : linesOfFile) {
-                    if (s.contains(bankAccount.getAccountNumber())) {
-                        String newS = s.replace(bankAccount.getAccountNumber(), newAccountNum);
-                        changedLinesOfFile.add(newS);
-                    } else {
-                        changedLinesOfFile.add(s);
-                    }
+        try {
+            List<String> linesOfFile = Files.readAllLines(Paths.get(BANK_ACCOUNTS));
+            List<String> changedLinesOfFile = new ArrayList<>();
+            for (String s : linesOfFile) {
+                if (s.contains(bankAccount.getAccountNumber())) {
+                    String newS = s.replace(bankAccount.getAccountNumber(), newAccountNum);
+                    changedLinesOfFile.add(newS);
+                } else {
+                    changedLinesOfFile.add(s);
                 }
-                Files.delete(bankAccountsFile);
-                Path newFile = Files.createFile(Paths.get(BANK_ACCOUNTS));
-                Files.write(newFile, changedLinesOfFile);
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
             }
+            Files.delete(bankAccountsFile);
+            Path newFile = Files.createFile(Paths.get(BANK_ACCOUNTS));
+            Files.write(newFile, changedLinesOfFile);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
     }
 
     public boolean deleteBankAccount(BankAccount bankAccount) throws BankAccountNotDeletedException {
-        Merchant merchant = merchants.stream().filter(c -> c.getId().equals(bankAccount.getMerchantId())).findFirst().get();
+        Merchant merchant = merchants.stream().filter(c -> c.getId().equals(bankAccount.getMerchantId())).findFirst().orElseThrow(() -> new BankAccountNotDeletedException("Bank account not deleted!"));
         boolean deleted = merchant.getBankAccounts().remove(bankAccount);
         try {
             List<String> linesOfFile = Files.readAllLines(Paths.get(BANK_ACCOUNTS));
@@ -115,9 +110,6 @@ public class MerchantService implements FilesPathes {
             Files.write(newFile, newLinesOfFile);
         } catch (IOException e) {
             System.out.println(e.getMessage());
-        }
-        if (!deleted) {
-            throw new BankAccountNotDeletedException("Bank account not deleted");
         }
         return deleted;
     }
@@ -136,18 +128,12 @@ public class MerchantService implements FilesPathes {
     }
 
     public Merchant getMerchantById(String id) throws MerchantNotFoundException {
-        Merchant merchant = merchants.stream().filter(c -> c.getId().toString().equals(id)).findFirst().orElse(null);
-        if (merchant == null) {
-            throw new MerchantNotFoundException("Merchant not found");
-        }
+        Merchant merchant = merchants.stream().filter(c -> c.getId().toString().equals(id)).findFirst().orElseThrow(() -> new MerchantNotFoundException("Merchant not found!"));
         return merchant;
     }
 
     public boolean deleteMerchant(String id) throws MerchantNotDeletedException, MerchantNotFoundException {
-        Merchant merchant = merchants.stream().filter(c -> c.getId().toString().equals(id)).findFirst().orElse(null);
-        if (merchant == null) {
-            throw new MerchantNotFoundException("Merchant not found");
-        }
+        Merchant merchant = merchants.stream().filter(c -> c.getId().toString().equals(id)).findFirst().orElseThrow(() -> new MerchantNotFoundException("Merchant not found"));
         boolean deleted = merchants.remove(merchant);
         try {
             List<String> linesOfFileBankAcc = Files.readAllLines(Paths.get(BANK_ACCOUNTS));
