@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE medicalInstitution [
+        <!ELEMENT medicalInstitution (employees+)>
+        <!ELEMENT employees (employee+)>
+        <!ELEMENT employee (fullName,position,department,workExperience)>
+        <!ELEMENT fullName (#PCDATA)>
+        <!ELEMENT position (#PCDATA)>
+        <!ELEMENT department (#PCDATA)>
+        <!ELEMENT workExperience (#PCDATA)>
+        ]>
+<medicalInstitution xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:noNamespaceSchemaLocation="medicalInstitution.xsd"
+>
+    <employees>
+        <employee>
+            <fullName>Ksenia Tsoi Olegovna</fullName>
+            <position>Nurse</position>
+            <department>Resuscitation</department>
+            <workExperience>2 years</workExperience>
+        </employee>
+        <employee>
+            <fullName>Darya Tsukrovskaya Alekseevna</fullName>
+            <position>Nurse</position>
+            <department>Dentistry</department>
+            <workExperience>1 year</workExperience>
+        </employee>
+        <employee>
+            <fullName>Ivan Ivanov Ivanov</fullName>
+            <position>Doctor</position>
+            <department>Resuscitation</department>
+            <workExperience>5 years</workExperience>
+        </employee>
+        <employee>
+            <fullName>Maksim Averkiev Igorevich</fullName>
+            <position>Doctor</position>
+            <department>Anesthesia</department>
+            <workExperience>10 years</workExperience>
+        </employee>
+    </employees>
+</medicalInstitution>
+
